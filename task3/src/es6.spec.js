@@ -40,8 +40,67 @@ describe('es6', () => {
         it('экземпляр класса создается', () => {
             const dic = new core.Dictionary();
 
-            // TODO
             assert.strictEqual(!!dic, true);
+        });
+
+        it('добавление слова', () => {
+            const dic = new core.Dictionary();
+
+            dic.addWord("word","meaning");
+
+            assert.strictEqual(dic.getMeaning("word"), "meaning");
+        });
+
+        it('слово не найдено', () => {
+            const dic = new core.Dictionary();
+
+            const exercise = () => dic.getMeaning("word");
+
+            assert.throws(exercise, /^Error: Word not found$/);
+        });
+
+        it('удаление слова', () => {
+            const dic = new core.Dictionary();
+
+            dic.addWord("word","meaning");
+
+            assert.strictEqual(dic.getMeaning("word"), "meaning");
+
+            dic.deleteWord("word");
+
+            const exercise = () => dic.getMeaning("word");
+
+            assert.throws(exercise, /^Error: Word not found$/);
+        });
+
+        it('изменение значения', () => {
+            const dic = new core.Dictionary();
+
+            dic.addWord("word","meaning");
+
+            assert.strictEqual(dic.getMeaning("word"), "meaning");
+
+            dic.changeMeaning("word", "meaning2");
+
+            assert.strictEqual(dic.getMeaning("word"), "meaning2");
+        });
+
+        it('размер', () => {
+            const dic = new core.Dictionary();
+
+            assert.strictEqual(dic.getSize(), 0);
+
+            dic.addWord("word","meaning");
+
+            assert.strictEqual(dic.getSize(), 1);
+        });
+
+        it('проверка существование слова', () => {
+            const dic = new core.Dictionary();
+
+            dic.addWord("word","meaning");
+
+            assert.strictEqual(dic.hasWord("word"), true);
         });
     });
 });

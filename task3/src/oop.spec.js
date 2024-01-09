@@ -61,19 +61,19 @@ describe('ООП', () => {
             queue.push(...[1,2,3,4]);
             assert.strictEqual(queue.pop(), 1);
             assert.strictEqual(queue.pop(), 2);
-            assert.strictEqual(queue.size, 2);
+            assert.strictEqual(queue.length, 2);
 
             queue.push(5);
-            assert.strictEqual(queue.size, 3);
+            assert.strictEqual(queue.length, 3);
             assert.strictEqual(queue.pop(), 3);
 
             queue.clear();
-            assert.strictEqual(queue.size, 0);
+            assert.strictEqual(queue.length, 0);
         });
 
         it('проверка на пограничные случаи', () => {
             const queue = new core.Queue();
-            assert.strictEqual(queue.size, 0);
+            assert.strictEqual(queue.length, 0);
             assert.strictEqual(queue.pop(), undefined);
         });
 
@@ -81,13 +81,24 @@ describe('ООП', () => {
             const queue = new core.Queue([1,-2,3,5]);
             assert.strictEqual(queue.pop(), 1);
             assert.strictEqual(queue.pop(), -2);
-            assert.strictEqual(queue.size, 2);
+            assert.strictEqual(queue.length, 2);
         });
 
         it('методы работают корректно ', () => {
             const queue = new core.Queue([1,-2,3,5]);
-           // TODO: ваши тесты
-            assert.strictEqual(true, true);
+            const queue1 = new core.Queue([1,-2,3,5]);
+            const queue2 = new core.Queue([1, 3,3,5]);
+
+            //equals
+            assert.strictEqual(queue.equals(queue1), true);
+            assert.strictEqual(queue.equals(queue), true);
+            assert.strictEqual(queue.equals(queue2), false);
+            assert.strictEqual(queue1.equals(queue2), false);
+
+            //toString
+            assert.strictEqual(queue.toString(), "1 -2 3 5");
+            assert.strictEqual(queue1.toString(), "1 -2 3 5");
+            assert.strictEqual(queue2.toString(), "1 3 3 5");
         });
     });
 });
