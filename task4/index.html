@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="./normalize.css">
+    <link rel="stylesheet" href="./index.css">
+    <title>JS task</title>
+</head>
+<body>
+    <header class="header">
+        <div class="header__inner">
+            <div class="header__menu">
+                <span class="logo">
+                    <img class="logo__img" alt="company logo" src="assets/main-logo.svg">
+                </span>
+
+                <span class="text">Шпякин Андрей 6407</span>
+            </div>
+
+            <div class="header__login">
+                <button id="defaultBtn" class="yellow-button">Засетапить начальные значения</button>
+            </div>
+        </div>
+    </header>
+
+
+    <main class="main">
+        <form class="edit__box" onsubmit="confirmClick(this.submitted);">
+            <span class="text main__title-text">Создать / редактировать карточку товара</span>
+            <div class="edit__box__inputs">
+                <input class="input-form text" placeholder="Название" name="name" required>
+                <textarea class="input-form text" placeholder="Описание" name="description" required></textarea>
+                <input class="input-form text" placeholder="Ссылка на изображение" name="imgLink" required>
+                <input class="input-form text" placeholder="Код товара" name="code" required>
+                <input class="input-form text" placeholder="Поставщик" name="provider" required>
+            </div>
+            <div class="button-container">
+                <button class="yellow-button" id="cancelBtn" onclick="clearForm()" type="button">Отмена</button>
+                <button class="yellow-button" id="deleteBtn" onclick="deleteCard(event)" type="button">Удалить</button>
+                <input class="yellow-button" id="approveBtn" type="submit" value="Принять" onclick="this.form.submitted=this.cardIndex;">
+            </div>
+        </form>
+
+        <div class="cards-container">
+            <span class="text main__title-text">Витрина карточек</span>
+            <div class="cards-list">
+                <!--  Cards are here  -->
+            </div>
+        </div>
+    </main>
+<script src="cards.js"></script>
+</body>
+</html>
