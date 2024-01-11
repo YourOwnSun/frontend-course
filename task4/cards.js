@@ -1,38 +1,75 @@
 class Card {
-    constructor(code, name, imageLink, description, provider) {
+    constructor(code, name, imageLink, description, provider, id) {
         this.code = code;
         this.name = name;
         this.imageLink = imageLink;
         this.description = description;
         this.provider = provider;
+        this.id = id;
     }
 }
 
-function renderAllCards() {
-    let cardsArray = JSON.parse(window.localStorage.getItem("cards"));
-
-    if (cardsArray === null) return;
-
-    for (let card of cardsArray) renderCard(card)
+function fetchAllData() {
+    fetchDevProfile();
+    fetchCards();
 }
 
-function editClick(event) {
+async function fetchDevProfile() {
+    try {
+        await fetch('http://localhost:3000/devProfile').then(res => res.json()).then(
+            data => {
+                document.getElementById('devProfileSpan').textContent = `${data.name} ${data.group}`;
+            }
+        );
+    } catch (err) {
+        alert("Не удалось загрузить информацию об авторе");
+    }
+}
+
+async function fetchCards() {
+    try {
+        let cardsArray = await fetch('http://localhost:3000/cards').then(res => res.json());
+        document.getElementById('skeleton-card').classList.add('hidden');
+
+        if (cardsArray.length === 0) return;
+
+        for (let card of cardsArray) {
+            renderCard(card);
+        }
+
+    } catch (err) {
+        alert("Не удалось загрузить карточки");
+    }
+}
+
+async function editClick(event) {
     let id = event.target.getAttribute("cardId");
-    let cardsArray = JSON.parse(window.localStorage.getItem("cards"));
-    let card = cardsArray.find(x => Number(x.code) === Number(id));
 
-    document.getElementsByName('code')[0].value = card.code;
-    document.getElementsByName('code')[0].disabled = true;
-    document.getElementsByName('name')[0].value = card.name;
-    document.getElementsByName('imgLink')[0].value = card.imageLink;
-    document.getElementsByName('description')[0].value = card.description;
-    document.getElementsByName('provider')[0].value = card.provider;
-    document.getElementById("approveBtn").cardIndex = cardsArray.findIndex(x => Number(x.code) === Number(id));
-    document.getElementById("deleteBtn").cardIndex = cardsArray.findIndex(x => Number(x.code) === Number(id));
+    try{
+        let card = await fetch(`http://localhost:3000/cards/${id}`).then(res => res.json());
+        document.getElementsByName('code')[0].value = card.code;
+        document.getElementsByName('code')[0].disabled = true;
+        document.getElementsByName('name')[0].value = card.name;
+        document.getElementsByName('imgLink')[0].value = card.imageLink;
+        document.getElementsByName('description')[0].value = card.description;
+        document.getElementsByName('provider')[0].value = card.provider;
+        document.getElementById("approveBtn").cardIndex = card.code;
+        document.getElementById("deleteBtn").cardIndex = card.code;
+    }catch (err) {
+        alert("Произошла ошибка при получении карточки!");
+    }
 }
 
-function confirmClick(cardIndex) {
-    let cardsArray = JSON.parse(window.localStorage.getItem("cards"));
+async function confirmClick(cardIndex) {
+    document.getElementById('preloader').classList.remove('hidden');
+
+    let cardsArray;
+
+    try {
+        cardsArray = await fetch('http://localhost:3000/cards').then(res => res.json());
+    } catch (err) {
+        alert("При получении массива данных что-то пошло не так");
+    }
 
     if (cardsArray === null) cardsArray = [];
 
@@ -40,16 +77,38 @@ function confirmClick(cardIndex) {
 
     if (cardsArray.some(x => Number(x.code) === Number(document.getElementsByName('code')[0].value)) && isCreate) {
         alert("Код должен быть уникальным!");
+        document.getElementById('preloader').classList.add('hidden');
         return;
     }
 
+
+    let card = getCardFromForm();
     if (isCreate) {
-        cardsArray[cardsArray.length] = getCardFromForm();
+        try {
+            await fetch('http://localhost:3000/cards', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(card)
+            });
+            renderCard(card);
+        } catch (err) {
+            alert("Что-то пошло не так");
+        }
     } else {
-        cardsArray[cardIndex] = getCardFromForm();
+        await fetch(`http://localhost:3000/cards/${cardIndex}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(card)
+        });
+        location.reload();
     }
 
-    updateLocalStorage(cardsArray);
+    clearForm();
+    document.getElementById('preloader').classList.add('hidden');
 }
 
 function getCardFromForm() {
@@ -58,24 +117,24 @@ function getCardFromForm() {
         document.getElementsByName('name')[0].value,
         document.getElementsByName('imgLink')[0].value,
         document.getElementsByName('description')[0].value,
-        document.getElementsByName('provider')[0].value
+        document.getElementsByName('provider')[0].value,
+        `${document.getElementsByName('code')[0].value}`
     );
 }
 
-function deleteCard(event) {
+async function deleteCard(event) {
     if (document.getElementById("deleteBtn").cardIndex === undefined)
         return;
 
-    let cardsArray = JSON.parse(window.localStorage.getItem("cards"));
-    cardsArray.splice(event.target.cardIndex, 1);
-
-    updateLocalStorage(cardsArray);
-}
-
-function updateLocalStorage(cards) {
-    window.localStorage.clear();
-    window.localStorage.setItem('cards', JSON.stringify(cards));
-    location.reload();
+    try {
+        await fetch(`http://localhost:3000/cards/${event.target.cardIndex}`, {
+            method: 'DELETE'
+        });
+        document.getElementById(`${event.target.cardIndex}`).remove();
+        clearForm();
+    } catch (err) {
+        alert("Не удалось удалить карточку");
+    }
 }
 
 function clearForm() {
@@ -144,18 +203,4 @@ function renderCard(card) {
     document.getElementsByClassName("cards-list")[0].appendChild(cardDiv);
 }
 
-function defaultCards() {
-    updateLocalStorage(
-        [new Card(1, "1", "https://media.baamboozle.com/uploads/images/104242/1599054197_26253", "first", "prov1"),
-            new Card(2, "2", "https://img.freepik.com/premium-photo/two-3d-illustration-golden-number-2-on-white-background-and-copy-space-on-right-hand-side-for-text-best-for-anniversary-birthday-new-year-celebration_131956-92.jpg", "second", "prov2"),
-            new Card(3, "3", "https://png.pngtree.com/png-vector/20210313/ourmid/pngtree-vector-font-alphabet-number-3-png-image_3053672.png", "third", "prov3"),
-            new Card(4, "4", "https://cdn-icons-png.flaticon.com/512/3570/3570104.png", "fourth?", "prov4")
-        ]
-    );
-}
-
-
-const defaultBtn = document.getElementById('defaultBtn');
-defaultBtn.addEventListener('click', defaultCards);
-
-window.onload = renderAllCards;
+fetchAllData();

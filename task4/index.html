@@ -15,11 +15,7 @@
                     <img class="logo__img" alt="company logo" src="assets/main-logo.svg">
                 </span>
 
-                <span class="text">Шпякин Андрей 6407</span>
-            </div>
-
-            <div class="header__login">
-                <button id="defaultBtn" class="yellow-button">Засетапить начальные значения</button>
+                <span class="text" id="devProfileSpan">Шпякин Андрей 6407</span>
             </div>
         </div>
     </header>
@@ -46,6 +42,24 @@
             <span class="text main__title-text">Витрина карточек</span>
             <div class="cards-list">
                 <!--  Cards are here  -->
+
+                <div class="card" id="skeleton-card">
+                    <span class="text">code:</span>
+                    <div class="card__content">
+                        <img src="https://www.ledr.com/colours/grey.jpg">
+                        <div class="card__content__sub">
+                            <span class="text card__title">Название</span>
+                            <span class="text card__provider">Поставщик</span>
+                        </div>
+                    </div>
+                    <span class="text card__description">Описание</span>
+                    <button class="yellow-button">Изменить</button>
+                </div>
+            </div>
+
+            <div id="preloader" class="preloader hidden">
+                <div class="preloader__div"></div>
+                <div class="preloader__div"></div>
             </div>
         </div>
     </main>
