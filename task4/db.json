@@ -1,0 +1,40 @@
+{
+  "cards": [
+    {
+      "id": 1,
+      "code": 1,
+      "name": "1",
+      "provider": "prov1",
+      "imageLink": "https://media.baamboozle.com/uploads/images/104242/1599054197_26253",
+      "description": "description1"
+    },
+    {
+      "id": 2,
+      "code": 2,
+      "name": "2",
+      "provider": "prov2",
+      "imageLink": "https://img.freepik.com/premium-photo/two-3d-illustration-golden-number-2-on-white-background-and-copy-space-on-right-hand-side-for-text-best-for-anniversary-birthday-new-year-celebration_131956-92.jpg",
+      "description": "description2"
+    },
+    {
+      "id": 3,
+      "code": 3,
+      "name": "3",
+      "provider": "prov3",
+      "imageLink": "https://png.pngtree.com/png-vector/20210313/ourmid/pngtree-vector-font-alphabet-number-3-png-image_3053672.png",
+      "description": "description3"
+    },
+    {
+      "id": 4,
+      "code": 4,
+      "name": "4",
+      "provider": "prov4",
+      "imageLink": "https://cdn-icons-png.flaticon.com/512/3570/3570104.png",
+      "description": "description4"
+    }
+  ],
+  "devProfile": {
+    "name": "Шпякин Андрей",
+    "group": "6407"
+  }
+}
